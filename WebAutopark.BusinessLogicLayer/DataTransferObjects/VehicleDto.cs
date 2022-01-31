@@ -1,6 +1,8 @@
-﻿namespace WebAutopark.BusinessLogicLayer.DataTransferObjects
+﻿using WebAutopark.Core.Enums;
+
+namespace WebAutopark.BusinessLogicLayer.DataTransferObjects
 {
-    public class VehicleDTO
+    public class VehicleDto
     {
         public int VehicleId { get; set; }
         public string Model { get; set; }
@@ -12,6 +14,8 @@
         public string LicensePlate { get; set; }
         public double Mileage { get; set; }
         public Color Color { get; set; }
-        public int VehicleTypeId { get; set; }    
+        public double FuelConsumption { get; set; }
+        public int VehicleTypeId { get; set; }   
+        public VehicleTypeDto VehicleType { get; set; }
     }
 }

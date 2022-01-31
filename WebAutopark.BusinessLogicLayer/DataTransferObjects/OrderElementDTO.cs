@@ -1,11 +1,11 @@
-﻿namespace WebAutopark.DataAccesLayer.Entities
+﻿namespace WebAutopark.BusinessLogicLayer.DataTransferObjects
 {
-    public class OrderElement
+    public class OrderElementDto
     {
         public int OrderElementId { get; set; }
         public int OrderId { get; set; }
         public int DetailId { get; set; }
         public int Quantity { get; set; }
-        public Detail Detail { get; set; }
+        public DetailDto Detail { get; set; }
     }
 }

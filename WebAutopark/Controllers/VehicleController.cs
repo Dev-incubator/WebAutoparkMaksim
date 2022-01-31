@@ -7,17 +7,19 @@ using WebAutopark.BusinessLogicLayer.Interfaces;
 using WebAutopark.Models;
 using System;
 using System.Linq;
+using WebAutopark.Core.Enums;
+
 
 namespace WebAutopark.Controllers
 {
     public class VehicleController : Controller
     {
-        private readonly IDtoService<VehicleDTO> _vehicleDtoService;
-        private readonly IDtoService<VehicleTypeDTO> _vehicleTypeDtoService;
+        private readonly IVehicleService _vehicleDtoService;
+        private readonly IDataService<VehicleTypeDto> _vehicleTypeDtoService;
         private readonly IMapper _mapper;
 
-        public VehicleController(IDtoService<VehicleDTO> vehicleDtoService,
-                                 IDtoService<VehicleTypeDTO> vehicleTypeDtoService,
+        public VehicleController(IVehicleService vehicleDtoService,
+                                 IDataService<VehicleTypeDto> vehicleTypeDtoService,
                                  IMapper mapper)
         {
             _vehicleDtoService = vehicleDtoService;
@@ -26,11 +28,16 @@ namespace WebAutopark.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchName, SortOrder sortOrder)
         {
-            var vehiclesDto = await _vehicleDtoService.GetAll();
+            ViewBag.SortByModel = sortOrder == SortOrder.ModelAsc ? SortOrder.ModelDesc : SortOrder.ModelAsc;
+            ViewBag.SortByMileage = sortOrder == SortOrder.MileageAsc ? SortOrder.MileageDesc : SortOrder.MileageAsc;
+            ViewBag.SortByType = sortOrder == SortOrder.TypeAsc ? SortOrder.TypeDesc : SortOrder.TypeAsc;
 
-            var searchName = Request.Query.FirstOrDefault(p => p.Key == "searchName").Value.ToString();
+            ViewBag.CurrentSearchName = searchName;
+
+            var vehiclesDto = await _vehicleDtoService.GetAll(sortOrder);
+
             if (!String.IsNullOrEmpty(searchName))
             {
                 vehiclesDto = vehiclesDto.Where(v => v.Model
@@ -54,7 +61,7 @@ namespace WebAutopark.Controllers
         {
             if (ModelState.IsValid)
             {
-                var vehicleDto = _mapper.Map<VehicleDTO>(vehicleViewModel);
+                var vehicleDto = _mapper.Map<VehicleDto>(vehicleViewModel);
                 await _vehicleDtoService.Create(vehicleDto);
             }
 
@@ -105,11 +112,20 @@ namespace WebAutopark.Controllers
         {
             if (ModelState.IsValid)
             {
-                var vehicleDto = _mapper.Map<VehicleDTO>(vehicleViewModel);
+                var vehicleDto = _mapper.Map<VehicleDto>(vehicleViewModel);
                 await _vehicleDtoService.Update(vehicleDto);
             }
 
             return RedirectToAction(nameof(Index));
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Information(int id)
+        {
+            var vehicleDto = await _vehicleDtoService.GetById(id);
+            var vehicleView = _mapper.Map<VehicleViewModel>(vehicleDto);
+
+            return View(vehicleView);
         }
     }
 }

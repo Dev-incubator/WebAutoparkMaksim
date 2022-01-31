@@ -1,0 +1,22 @@
+﻿@model WebAutopark.Models.OrderElementViewModel
+@{
+    ViewData["Title"] = "Delete orderElement";
+}
+<h2>@ViewBag.Title</h2>
+
+<div>
+    <div class="validation" asp-validation-summary="ModelOnly"></div>
+
+    <div>
+        <h6 class="d-inline-block">OrderElementId:</h6>
+        <p class="m-2 d-inline-block">@Model.OrderElementId</p>
+    </div> 
+
+    <div>
+        <form asp-controller="OrderElement" asp-action="Delete" asp-route-orderElementId="@Model.OrderElementId" asp-route-orderId="@Model.OrderId" method="post">
+            <div class="form-group">
+                <input type="submit" class="btn btn-default" value="Delete" />
+            </div>
+        </form>
+    </div>
+</div>

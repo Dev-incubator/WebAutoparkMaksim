@@ -1,4 +1,6 @@
-﻿namespace WebAutopark.DataAccesLayer.Entities
+﻿using System;
+
+namespace WebAutopark.DataAccesLayer.Entities
 {
     public class Order
     {
